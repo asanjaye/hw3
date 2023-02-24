@@ -100,12 +100,12 @@ Event* NotGate::update(uint64_t current_time){
 
 	for(auto w : m_inputs){
 		char in = w->getState();
-		if(in==1){
-			state = 0;
+		if(in=='1'){
+			state = '0';
 			break;
 		}
-		else if(in==0){
-			state =1;
+		else if(in=='0'){
+			state ='1';
 			break;
 		}
 		else if(in=='X'){

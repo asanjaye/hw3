@@ -159,9 +159,6 @@ T const & Heap<T,PComparator>::top() const
   // If we get here we know the heap has at least 1 item
   // Add code to return the top element
   return heap[0];
-
-
-
 }
 
 
@@ -181,8 +178,6 @@ void Heap<T,PComparator>::pop()
  heap[0] = heap[heap.size()-1];
     heap.pop_back();
     heapify(0);
-
-
 }
 
 
