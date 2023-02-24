@@ -2,6 +2,7 @@
 #define HEAP_H
 #include <functional>
 #include <stdexcept>
+#include <vector>
 
 template <typename T, typename PComparator = std::less<T> >
 class Heap
@@ -59,15 +60,86 @@ public:
    */
   size_t size() const;
 
+  void heapify(unsigned idx);
+
+
 private:
   /// Add whatever helper functions and data members you need below
-
+  std::vector<T> heap;
+  PComparator c_;
+  int m_;  
 
 
 
 };
+template <typename T, typename PComparator>
+Heap<T, PComparator>::Heap(int m, PComparator c){
+  c_ = c;
+  m_ = m;
+}
 
-// Add implementation of member functions here
+template <typename T, typename PComparator>
+Heap<T, PComparator>::~Heap(){
+  
+}
+
+template <typename T, typename PComparator>
+bool Heap<T, PComparator>::empty() const{
+  return heap.empty();
+}
+
+
+template <typename T, typename PComparator>
+void Heap<T, PComparator>::heapify(unsigned idx){
+  if(idx*m_+1 >= heap.size()){
+    return;
+  }
+
+
+    int child;
+    child = (m_*idx) + 1;
+    //child2 = (2*idx)+2
+    int temp = child;
+    for(size_t i =1; i<m_; ++i){
+      if(temp+i < heap.size() && c_(heap[temp+i],heap[child])){
+      child=temp+i;
+      }
+    }
+    
+    if(c_(heap[child], heap[idx])){
+      std::swap(heap[idx],heap[child]);
+      heapify(child);
+    }
+  
+}
+
+
+
+template <typename T, typename PComparator>
+size_t Heap<T, PComparator>::size() const{
+  return heap.size();
+}
+
+
+
+
+
+template <typename T, typename PComparator>
+void Heap<T, PComparator>::push(const T& item){
+    heap.push_back(item);
+    std::size_t index = heap.size() - 1;
+    while(index!=0){
+      std::size_t parentidx = (index-1)/m_;
+      T& current = heap[index];
+      T& parent = heap[parentidx];
+      if(c_(parent,current)){
+        break;
+      }
+      std::swap(current, parent);
+      index = parentidx;
+    }
+    //heapify(0);
+}
 
 
 // We will start top() for you to handle the case of 
@@ -81,11 +153,12 @@ T const & Heap<T,PComparator>::top() const
     // ================================
     // throw the appropriate exception
     // ================================
-
+    throw std::underflow_error("Heap is empty");
 
   }
   // If we get here we know the heap has at least 1 item
   // Add code to return the top element
+  return heap[0];
 
 
 
@@ -101,10 +174,13 @@ void Heap<T,PComparator>::pop()
     // ================================
     // throw the appropriate exception
     // ================================
+      throw std::underflow_error("Heap is empty");
 
 
   }
-
+ heap[0] = heap[heap.size()-1];
+    heap.pop_back();
+    heapify(0);
 
 
 }
